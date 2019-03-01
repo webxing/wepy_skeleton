@@ -1,0 +1,51 @@
+<template>
+  <view class="container">
+    {{msg}}
+    <Modal></Modal>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import common from '../common/common'
+  import Modal from '@/components/Modal'
+  import {trycatch} from '../common/decorator'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: 'test'
+    }
+    components = {
+      Modal
+    }
+    data = {
+      msg: 'index'
+    }
+    computed = {
+    }
+    methods = {}
+
+    @trycatch()
+    onLoad() {
+      console.log('onLoad')
+    }
+    onShow() {
+      console.log('onShow')
+    }
+    onHide() {
+      console.log('onHide')
+    }
+    onUnload() {
+      console.log('onUnload')
+    }
+    // 【config】配置Less
+    async handleError({errMsg}) {
+      let msg = common.getErrorWarnMsg(errMsg)
+      this.$invoke('Modal', 'showModal', { msg, btnMsg: '重新加载', cb: () => { this.onLoad() } })
+    }
+  }
+</script>
+
+<style lang="less">
+
+</style>

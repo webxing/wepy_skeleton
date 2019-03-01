@@ -1,0 +1,79 @@
+<template>
+  <view class="warn-modal" wx:if='{{show}}'>
+    <view class='modal'>
+      {{tips}}
+      <button @tap='close'>{{btnMsg}}</button>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+
+  export default class Modal extends wepy.component {
+    props = {
+    }
+
+    data = {
+      cb: null,
+      show: false,
+      tips: '',
+      btnMsg: '',
+      src: ''
+    }
+    methods = {
+      showModal({msg, btnMsg, cb}) {
+        this.show = true
+        this.src = `../images/toast_1@2x.png`
+        this.tips = msg
+        this.btnMsg = btnMsg
+        this.cb = cb
+        this.$apply()
+      },
+      close() {
+        this.show = false
+        let fn = this.cb
+        fn()
+      }
+    }
+  }
+</script>
+<style lang="less">
+  .warn-modal{
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .modal {
+      transform: translateY(-100rpx);
+      width:540rpx;
+      height:540rpx;
+      background:#fff;
+      border-radius:20rpx;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60rpx 0 50rpx 0;
+      box-sizing: border-box;
+      button {
+        margin-top: 35rpx;
+        width: 220rpx;
+        height: 70rpx;
+        line-height: 70rpx;
+        background: linear-gradient(90deg,rgba(201,159,255,1) 0%,rgba(152,102,255,1) 100%);
+        box-shadow: 0rpx 4rpx 15rpx 0rpx rgba(152,102,255,0.5);
+        border-radius: 35rpx;
+        font-size: 32rpx;
+        color: #fff;
+        &:after {
+          border: none;
+        }
+      }
+    }
+  }
+</style>

@@ -1,0 +1,71 @@
+<style lang="less">
+
+</style>
+
+<script>
+  import wepy from 'wepy'
+  import 'wepy-async-function'
+  export default class extends wepy.app {
+    config = {
+      pages: [
+        'pages/index'
+      ],
+      window: {
+        backgroundTextStyle: 'light',
+        navigationBarBackgroundColor: '#fff',
+        navigationBarTitleText: 'WeChat',
+        navigationBarTextStyle: 'black'
+      },
+      // 【config】配置超时处理
+      networkTimeout: {
+        request: 7000,
+        downloadFile: 10000
+      },
+      // 【config】配置插件
+      plugins: {}
+    }
+    globalData = {}
+    constructor() {
+      super()
+      this.use('requestfix') // 解决了同时发起多个request时候的异常修复
+      // 【config】拦截request请求
+      this.intercept('request', {
+        config(p) {
+          // 对所有request请求中的OBJECT参数对象统一附加时间戳属性
+          p.timestamp = +new Date()
+          console.log('config request: ', p)
+          return p
+        },
+        // 请求成功后的回调函数
+        success(p) {
+          // 可以在这里对收到的响应数据对象进行加工处理
+          console.log('request success: ', p)
+          return p
+        },
+        // 请求失败后的回调函数
+        fail(p) {
+          console.log('request fail: ', p)
+          return p
+        },
+        // 请求完成时的回调函数(请求成功或失败都会被执行)
+        complete(p) {
+          console.log('request complete: ', p)
+        }
+      })
+    }
+    onLaunch() {
+      this.testAsync()
+    }
+    sleep(s) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve('promise resolved')
+        }, s * 1000)
+      })
+    }
+    async testAsync() {
+      const data = await this.sleep(3)
+      console.log(data)
+    }
+  }
+</script>
