@@ -20,12 +20,15 @@ function HttpRequest(url, params = {}, method = 'GET',sessionChoose = 'form') {
       dataType: 'json',
     }).then(res => {
       if (res.statusCode === 200 && res.data.code === 1) {
+        // 请求成功 后台code为1 正常
         resolve(res.data.data)
       } else {
+        // 请求成功 后台code不为1 异常
         console.log('code不是1-', res)
         reject(res.data)
       }
     }).catch(error => {
+      // 请求失败
       console.log('error-', error)
       reject(error)
     })

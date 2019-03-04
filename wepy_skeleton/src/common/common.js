@@ -1,6 +1,7 @@
 // 公用方法
 import wepy from 'wepy'
 
+// 根据代码错误信息 返回自定义文字错误信息
 function getErrorWarnMsg(msg) {
   if (!msg) return null
   const rules = [

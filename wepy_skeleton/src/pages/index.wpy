@@ -38,7 +38,10 @@
     onUnload() {
       console.log('onUnload')
     }
-    // 【config】配置Less
+    // 【config】错误处理
+    // msg: 弹窗显示错误信息
+    // btnMsg：弹窗按钮文案
+    // cb：点击弹窗按钮后执行的函数
     async handleError({errMsg}) {
       let msg = common.getErrorWarnMsg(errMsg)
       this.$invoke('Modal', 'showModal', { msg, btnMsg: '重新加载', cb: () => { this.onLoad() } })

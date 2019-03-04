@@ -1,6 +1,7 @@
 import api from './api'
 let allFormIds = []
 let flagFormId = false
+
 export function collectIDS(ids) {
   allFormIds.push({formId: ids})
   console.log('收集 formId ---- ', allFormIds)

@@ -1,5 +1,6 @@
 import wepy from 'wepy'
 
+// 设置
 function set(key, value) {
   return new Promise((resolve, reject) => {
     wepy.setStorage({key: key, data: value}).then(res => {
@@ -12,6 +13,8 @@ function set(key, value) {
 
   })
 }
+
+// 获取
 function get(key) {
   return new Promise((resolve, reject) => {
     wepy.getStorage({key: key}).then(res => {
@@ -23,6 +26,7 @@ function get(key) {
   })
 }
 
+// 删除
 function remove(key) {
   return new Promise((resolve, reject) => {
     wepy.removeStorage({key: key}).then(res => {
@@ -35,6 +39,7 @@ function remove(key) {
   })
 }
 
+// 清空
 function clear() {
   return new Promise((resolve, reject) => {
     wepy.clearStorage().then(res => {

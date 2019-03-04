@@ -1,3 +1,5 @@
+// cb：捕获到当前监控函数的错误时执行的回调
+// wait：监控的函数是否是async/await
 function trycatch(cb = 'handleError', wait = true) {
   // console.log('descriptor', target, name, descriptor)
   return function(target, name, descriptor) {

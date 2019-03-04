@@ -59,6 +59,11 @@ if (prod) {
     uglifyjs: {
       filter: /\.js$/,
       config: {
+        compress: {
+          // 打包后自动去除所有log debugger
+          drop_console: true,
+          drop_debugger: true
+        }
       }
     },
     imagemin: {
