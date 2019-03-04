@@ -9,7 +9,7 @@
     ├── package.json  // 配置启动脚本 (debug/dev/build)
     ├── project.config.json
     ├── src
-    │   ├── app.wpy
+    │   ├── app.wpy // networkTimeout plugins  this.use('promisify')  拦截request请求
     │   ├── common
     │   │   ├── animate.wxss  // 动画支持
     │   │   ├── api.js  // 所有api
@@ -17,6 +17,7 @@
     │   │   ├── common.js  // 封装一些公用方法
     │   │   ├── decorator.js  // 封装trycatch装饰器 实现对函数的错误监控
     │   │   ├── http.js  // 封装小程序request请求
+    │   │   ├── bindEvent.js  // 当n个触发条件均满足时 触发函数
     │   │   └── storage.js  // 封装storage为promise
     │   ├── components
     │   │   └── Modal.wpy  // 错误弹窗

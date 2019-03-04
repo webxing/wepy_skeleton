@@ -8,8 +8,10 @@
 <script>
   import wepy from 'wepy'
   import common from '../common/common'
-  import Modal from '@/components/Modal'
+  import Modal from '../components/Modal'
   import {trycatch} from '../common/decorator'
+  import { bindEvent, removeAllEvent } from '../common/bindEvent'
+  import storage from '../common/storage'
 
   export default class Index extends wepy.page {
     config = {
@@ -25,13 +27,34 @@
     }
     methods = {}
 
-    @trycatch()
-    onLoad() {
+    // @trycatch()
+    async onLoad() {
       console.log('onLoad')
+
+      await storage.set('test', 'test')
+
+      await storage.get('test')
+
+      await storage.clear()
+
+      // 移除所有Event
+      removeAllEvent()
+      // 绑定Event
+      bindEvent('answer-start', {maxCount: 2, fn: () => this.answerStart()})
     }
+
     onShow() {
       console.log('onShow')
+
+      setTimeout(() => {
+        bindEvent('answer-start', {maxCount: 2, fn: () => this.answerStart()})
+      }, 2000)
     }
+
+    answerStart() {
+      console.log('answerStart')
+    }
+
     onHide() {
       console.log('onHide')
     }

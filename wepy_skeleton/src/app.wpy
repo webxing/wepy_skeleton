@@ -28,6 +28,7 @@
     constructor() {
       super()
       this.use('requestfix') // 解决了同时发起多个request时候的异常修复
+      this.use('promisify') // 【config】开启wepy相关api的promise async  await支持
       // 【config】拦截request请求
       this.intercept('request', {
         config(p) {
