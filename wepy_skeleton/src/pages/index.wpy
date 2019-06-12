@@ -12,10 +12,11 @@
   import {trycatch} from '../common/decorator'
   import { bindEvent, removeAllEvent } from '../common/bindEvent'
   import storage from '../common/storage'
+  import api from '../common/api'
 
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: 'test'
+      navigationBarTitleText: 'index'
     }
     components = {
       Modal
@@ -27,28 +28,42 @@
     }
     methods = {}
 
-    // @trycatch()
     async onLoad() {
       console.log('onLoad')
 
-      await storage.set('test', 'test')
+      // await storage.set('test', 'test')
 
-      await storage.get('test')
+      // await storage.get('test')
 
-      await storage.clear()
+      // await storage.clear()
 
       // 移除所有Event
       removeAllEvent()
       // 绑定Event
       bindEvent('answer-start', {maxCount: 2, fn: () => this.answerStart()})
-    }
-
-    onShow() {
-      console.log('onShow')
 
       setTimeout(() => {
         bindEvent('answer-start', {maxCount: 2, fn: () => this.answerStart()})
       }, 2000)
+    }
+
+    @trycatch()
+    async onShow() {
+      console.log('onShow')
+      await this.login()
+    }
+
+    async login() {
+      const storageToken = await storage.get('token')
+      if (!storageToken) {
+        const { code } = await wepy.login() // 获取code
+        const {rawData, encryptedData, iv} = await wepy.getUserInfo()  // 获取用户昵称等信息
+        const { nickName: nickname, avatarUrl: portrait } = JSON.parse(rawData)
+        const fromWhere = this.$parent.globalData.scene
+        const openId = await api.getOpenId({code, fromWhere})  // 获取openId
+        const {token} = await api.login({ openId, nickname, portrait, encryptedData, iv, fromWhere }) // 获取token 缓存本地
+        await storage.set('token', token)
+      }
     }
 
     answerStart() {
@@ -61,12 +76,27 @@
     onUnload() {
       console.log('onUnload')
     }
+
     // 【config】错误处理
-    // msg: 弹窗显示错误信息
-    // btnMsg：弹窗按钮文案
-    // cb：点击弹窗按钮后执行的函数
-    async handleError({errMsg}) {
-      let msg = common.getErrorWarnMsg(errMsg)
+    async handleError(error) {
+      // 未授权
+      if (error.errMsg.includes('getUserInfo')) {
+        this.$redirect('./auth')
+        return
+      }
+       // token失效
+      if (error.status === 1000) {
+        if (await storage.get('token')) {
+          await storage.clear()
+        }
+        this.onShow()
+        return
+      }
+
+      // msg: 弹窗显示错误信息
+      // btnMsg：弹窗按钮文案
+      // cb：点击弹窗按钮后执行的函数
+      let msg = common.getErrorWarnMsg(error.errMsg)
       this.$invoke('Modal', 'showModal', { msg, btnMsg: '重新加载', cb: () => { this.onLoad() } })
     }
   }

@@ -1,0 +1,48 @@
+<template>
+  <view class="container">
+    <button form-type="submit" class='btn' open-type='getUserInfo' @getuserinfo='startAuth'>点击登录，进入小程序</button>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import common from '../common/common'
+
+  export default class Auth extends wepy.page {
+    config = {
+      navigationBarTitleText: 'auth'
+    }
+    data = {
+      options: null
+    }
+    onLoad(options) {
+      this.options = options
+    }
+    methods = {
+      startAuth: async(e) => {
+        if (e.detail.errMsg.includes('ok')) {
+          // 获取成功后，回首页
+          this.$redirect('./index', this.options)
+        }
+      }
+    }
+
+    onShareAppMessage() {
+      return common.shareTxt()
+    }
+  }
+</script>
+
+<style lang="less">
+.btn {
+  margin-top: 100rpx;
+  width: 630rpx;
+  height: 100rpx;
+  line-height:100rpx;
+  border-radius: 50rpx;
+  font-size: 36rpx;
+  font-weight:bold;
+  background: #2B9FFC;
+  color:#fff;
+}
+</style>
