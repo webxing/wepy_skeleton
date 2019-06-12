@@ -4,7 +4,7 @@ const sessionType = {
   'form': {'content-type': 'application/x-www-form-urlencoded'}
 }
 
-function HttpRequest(url, params = {}, method = 'GET',sessionChoose = 'form') {
+function HttpRequest(url, params = {}, method = 'GET', sessionChoose = 'form') {
   return new Promise((resolve, reject) => {
     url = wepy.$appConfig.rootURL + '/sentence' + url
     const session = sessionType[sessionChoose]
@@ -17,7 +17,7 @@ function HttpRequest(url, params = {}, method = 'GET',sessionChoose = 'form') {
       method: method,
       header: session,
       data: params,
-      dataType: 'json',
+      dataType: 'json'
     }).then(res => {
       if (res.statusCode === 200 && res.data.code === 1) {
         // 请求成功 后台code为1 正常

@@ -1,6 +1,6 @@
 <template>
   <view class="container">
-    <button form-type="submit" class='btn' open-type='getUserInfo' @getuserinfo='startAuth'>点击登录，进入小程序</button>
+    <button class='btn' open-type='getUserInfo' @getuserinfo='startAuth'>点击登录，进入小程序</button>
   </view>
 </template>
 

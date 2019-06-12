@@ -1,10 +1,10 @@
 /**
- * 
+ *
  * 通过 bindEvent 绑定 topic maxCount fn 到toDoList上
  * { topic } 主题
  * { maxCount } 成员上限
  * { fn } 满足成员上限需要触发的函数
- * 
+ *
  */
 let toDoList = new Map()
 
@@ -19,12 +19,10 @@ function removeAllEvent() {
   toDoList.clear()
 }
 
-//添加某topic的执行信息
+// 添加某topic的执行信息
 function bindEvent(topic, {maxCount = 2, fn}) {
-  if (!topic || !maxCount || !fn || typeof fn !== 'function')
-    throw new Error('add Event Error: lack of params')
-  if (maxCount <= 1)
-    throw new Error('add Event Error: maxCount cannot smaller than 1')
+  if (!topic || !maxCount || !fn || typeof fn !== 'function') { throw new Error('add Event Error: lack of params') }
+  if (maxCount <= 1) { throw new Error('add Event Error: maxCount cannot smaller than 1') }
   console.log('================bindEvent================', topic)
   // 是否存在该topic
   if (toDoList.has(topic)) {

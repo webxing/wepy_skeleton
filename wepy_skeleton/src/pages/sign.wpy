@@ -1,0 +1,160 @@
+<template>
+  <view class="share">
+    <canvas class='canvas' canvas-id="shareCanvas"></canvas>
+
+    <view class="btn-wrap">
+      <button class="share-btn" open-type="share">分享打卡</button>
+      <button @tap="drawCanvas" open-type="{{auth ? '' : 'openSetting'}}" @opensetting='handleSetting' class="save-btn">保存图片</button>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+import common from '@/common/common'
+
+let lock = false // 防重复点击
+
+export default class Sign extends wepy.page {
+  components = {
+  }
+  data = {
+    canvasTempFilePath: '',
+    windowWidth: 0,
+    auth: true
+  }
+
+  methods = {
+    handleSetting(e) {
+      this.auth = e.detail.authSetting['scope.writePhotosAlbum']
+      this.$apply()
+    },
+    drawCanvas() {
+      if (lock) return
+      lock = true
+      this.draw()
+    }
+  }
+
+  async onLoad(options) {
+    let { windowWidth } = await wepy.getSystemInfo()
+    this.windowWidth = windowWidth
+
+    this.$apply()
+  }
+
+  draw() {
+    let context = wx.createCanvasContext('shareCanvas')
+    let scale = (this.windowWidth / 750).toFixed(4)
+
+    context.setFillStyle('#8da1b1')
+    context.fillRect(0, 0, 750 * scale, 1334 * scale)
+
+    let drawTxtHeight = common.drawTxt({
+      context,
+      scale,
+      text: 'Free Classifieds Using Them To Promote Your Stuff Online',
+      broken: false,
+      fillStyle: '#fff',
+      x: 60,
+      y: 660,
+      lineHeight: 66,
+      maxWidth: 630,
+      fontsize: 48
+    })
+    console.log(`此次绘制总高度：${drawTxtHeight}px`)
+
+    // 绘制
+    context.draw(true, () => {
+      this.canvasToTempFilePath()
+      this.$apply()
+    })
+  }
+
+  canvasToTempFilePath() {
+    let _this = this
+    wx.canvasToTempFilePath({
+      canvasId: 'shareCanvas',
+      success(res) {
+        _this.canvasTempFilePath = res.tempFilePath
+        console.log(_this.canvasTempFilePath)
+        // 保存图片
+        wx.saveImageToPhotosAlbum({
+          filePath: _this.canvasTempFilePath,
+          fail(err) {
+            lock = false
+            let auth = (err.errMsg).includes('auth')
+            let msg = auth ? '请先授权允许保存到相册' : '保存失败'
+            _this.auth = !auth
+            _this.$apply()
+            wx.showToast({
+              title: msg,
+              icon: 'none',
+              duration: 2000
+            })
+          },
+          success(res) {
+            lock = false
+            // 已保存至相册～
+            wx.showToast({
+              title: '已保存至相册～',
+              icon: 'none',
+              duration: 2000
+            })
+          }
+        })
+        _this.$apply()
+      }
+    })
+  }
+
+  onShareAppMessage(option) {
+    return common.shareTxt()
+  }
+}
+</script>
+<style lang="less">
+.canvas {
+  position: absolute;
+  width: 100%;
+  height: 1334rpx;
+  left: -300vw;
+  top: 0;
+}
+.share {
+  box-sizing: border-box;
+  padding-bottom: 60rpx;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f2e8f8;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+ 
+  .btn-wrap {
+    box-sizing: border-box;
+    height: 230rpx;
+    margin-top: 500rpx;
+  }
+  .share-btn {
+    width: 630rpx;
+    height: 100rpx;
+    line-height: 100rpx;
+    background: rgba(43, 159, 252, 1);
+    border-radius: 50rpx;
+    font-size: 36rpx;
+    font-weight: 600;
+    color: #fff;
+  }
+  .save-btn {
+    margin-top: 30rpx;
+    width: 630rpx;
+    height: 100rpx;
+    line-height: 100rpx;
+    background: #fff;
+    border-radius: 50rpx;
+    font-size: 36rpx;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.8);
+  }
+}
+</style>

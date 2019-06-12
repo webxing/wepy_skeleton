@@ -10,7 +10,6 @@ function set(key, value) {
       console.log(`【缓存】存储${key}失败`)
       resolve()
     })
-
   })
 }
 

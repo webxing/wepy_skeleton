@@ -15,10 +15,9 @@ function login(data) {
 
   // 模拟返回数据
   return {
-    token: "9663de0677fb4992ac56817cfe26f9dc"
+    token: '9663de0677fb4992ac56817cfe26f9dc'
   }
 }
-
 
 export default {
   getOpenId,
